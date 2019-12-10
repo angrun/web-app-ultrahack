@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body onload="loadData()" style="margin: 0">
+    <ul id="images-list" style="columns: 1; list-style-type: none; width: 100%; padding: 0">
+    </ul>
+</body>
+<script>
+
+    function loadData() {
+        fetch("https://www.flickr.com/services/rest/?method=flickr.photos.search&tags=cat&per_page=10&api_key=e4774ca74391030bec9bfac5e014f5d7&format=json&nojsoncallback=1")
+            .then(resp => resp.json())
+            .then(data => {
+                data.photos.photo.forEach(
+                    photo => {
+                        let l = document.createElement("li");
+                        l.id = `list-item-${photo.id}`;
+                        l.style.paddingBottom = '5%';
+                        let i = document.createElement("img");
+                        i.src = `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg`;
+                        i.style.width = "100%";
+                        l.appendChild(i);
+                        document.getElementById("images-list").appendChild(l);
+                    }
+                );
+            });
+    }
+
+
+    window.onscroll = function(ev) {
+        if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 10000) {
+            loadData();
+        }
+    };
+</script>
+</html>
